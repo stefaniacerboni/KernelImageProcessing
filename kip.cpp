@@ -5,82 +5,22 @@
 #include <iostream>
 #include "kip.h"
 
-int kip::reflect(int M, int x)
-{
-    if(x < 0)
-    {
-        return -x - 1;
-    }
-    if(x >= M)
-    {
-        return 2*M - x - 1;
-    }
-    return x;
-}
-
-int kip::circular(int M, int x)
-{
-    if (x<0)
-        return x+M;
-    if(x >= M)
-        return x-M;
-    return x;
-}
-
-
-void kip::noBorderProcessing(Mat src, Mat dst, float Kernel[][3])
+kip::noBorderProcessing(Mat src, Mat dst, float Kernel[][3])
 {
 
-    float sum;
-    for(int y = 1; y < src.rows - 1; y++){
-        for(int x = 1; x < src.cols - 1; x++){
-            sum = 0.0;
-            for(int k = -1; k <= 1;k++){
-                for(int j = -1; j <=1; j++){
-                    sum = sum + Kernel[j+1][k+1]*src.at<uchar>(y - j, x - k);
-                }
-            }
-            dst.at<uchar>(y,x) = sum;
-        }
-    }
+float sum;
+for(int i = 1; i < src.rows - 1; i++){
+for(int j = 1; j < src.cols - 1; j++){
+sum = 0.0;
+for(int k = -1; k <= 1;k++){
+for(int l = -1; l <=1; l++){
+sum = sum + src.at<uchar>(i + k, j + l) * Kernel[k+1][l+1];
 }
-
-void kip::refletedIndexing(Mat src, Mat dst, float Kernel[][3])
-{
-    float sum, x1, y1;
-    for(int y = 0; y < src.rows; y++){
-        for(int x = 0; x < src.cols; x++){
-            sum = 0.0;
-            for(int k = -1;k <= 1; k++){
-                for(int j = -1;j <= 1; j++ ){
-                    x1 = reflect(src.cols, x - j);
-                    y1 = reflect(src.rows, y - k);
-                    sum = sum + Kernel[j+1][k+1]*src.at<uchar>(y1,x1);
-                }
-            }
-            dst.at<uchar>(y,x) = sum;
-        }
-    }
 }
-
-void kip::circularIndexing(Mat src, Mat dst, float Kernel[][3])
-{
-    float sum, x1, y1;
-    for(int y = 0; y < src.rows; y++){
-        for(int x = 0; x < src.cols; x++){
-            sum = 0.0;
-            for(int k = -1;k <= 1; k++){
-                for(int j = -1;j <= 1; j++ ){
-                    x1 = circular(src.cols, x - j);
-                    y1 = circular(src.rows, y - k);
-                    sum = sum + Kernel[j+1][k+1]*src.at<uchar>(y1,x1);
-                }
-            }
-            dst.at<uchar>(y,x) = sum;
-        }
-    }
+dst.at<uchar>(i,j) = sum;
 }
-
+}
+}
 void kip::getChannelImage(Mat src, int channel) {
     Mat bgr[3];
     split(src, bgr);
@@ -102,38 +42,21 @@ void kip::getChannelImage(Mat src, int channel) {
     }
 }
 
-void kip::gaussianBlur(Mat image) {
-    Mat dst;
-    Mat bgr[3];   //destination array
-    split(image,bgr);//split source in three channels
-    Mat dstbgr[3]; //crea un'immagine di destinazione vuota
+void Gaussian_Blur::process(Image src) {
+    array<Mat,3> bgr;   //destination array
+    bgr= src.getBGRChannels();
+    array<Mat,3> dstbgr; //crea un'immagine di destinazione vuota
 
-    //Gaussian Blur
-    float Kernel[3][3] = {
-        {1/16.0, 2/16.0, 1/16.0},
-        {2/16.0, 4/16.0, 2/16.0},
-        {1/16.0, 2/16.0, 1/16.0}
-    };
     for (int i = 0; i < 3; ++i) {
-        dstbgr[i] = Mat::zeros(Size(image.cols, image.rows), CV_8UC1);
+        dstbgr[i] = Mat::zeros(Size(src.getWidth(), src.getHeight()), CV_8UC1);
         noBorderProcessing(bgr[i],dstbgr[i],Kernel);
     }
-    vector<Mat> channels;
-    channels.push_back(dstbgr[0]);
-    channels.push_back(dstbgr[1]);
-    channels.push_back(dstbgr[2]);
-    merge(channels, dst);
-    imwrite( "GaussianBlur.pbm", dst);
-    imshow("GaussianBlur", dst);
+    Image* dst = new Image(dstbgr);
+    dst->Save("GaussianBlur.ppm");
+    dst->Show();
 }
 
-void kip::boxBlur(Mat image){
-    //Box Blur
-    float Kernel[3][3] = {
-        {1/9.0, 1/9.0, 1/9.0},
-        {1/9.0, 1/9.0, 1/9.0},
-        {1/9.0, 1/9.0, 1/9.0}
-    };
+void BoxBlur::process(Mat image){
     Mat dst;
     Mat bgr[3];   //destination array
     split(image,bgr);//split source in three channels
@@ -147,16 +70,10 @@ void kip::boxBlur(Mat image){
     channels.push_back(dstbgr[1]);
     channels.push_back(dstbgr[2]);
     merge(channels, dst);
-    imwrite( "BoxBlur.pbm", dst);
+    imwrite( "BoxBlur.ppm", dst);
     imshow("Box Blur", dst);
 }
-void kip::sharpen(Mat image){
-    //Sharpen
-    float Kernel[3][3] = {
-        {0, -1, 0},
-        {-1, 5, -1},
-        {0, -1, 0}
-    };
+void Sharpen::process(Mat image){
     Mat dst;
     Mat bgr[3];   //destination array
     split(image,bgr);//split source in three channels
@@ -170,31 +87,21 @@ void kip::sharpen(Mat image){
     channels.push_back(dstbgr[1]);
     channels.push_back(dstbgr[2]);
     merge(channels, dst);
-    imwrite( "Sharpen.pbm", dst);
+    imwrite( "Sharpen.ppm", dst);
     imshow("Sharpen", dst);
 }
-void kip::sobelEdge(Mat src) {
+void SobelEdge::process(Mat src) {
     Mat src_gray;
     float pixel_x;
     float pixel_y;
     float val;
-    float Gx[3][3] = {
-            {-1, 0, 1},
-            {-2, 0, 2},
-            {-1, 0, 1}
-    };
-    float Gy[3][3] = {
-            {-1, -2, -1},
-            {0, 0, 0},
-            {1, 2, 1}
-    };
-    cvtColor(src, src_gray, CV_BGR2GRAY );
+    cvtColor(src, src_gray, COLOR_BGR2GRAY );
     Mat dst = src_gray.clone();
     for (int x = 1; x < src_gray.rows -2; x++) {
         for (int y = 1; y < src_gray.cols -2; y++) {
             pixel_x = (Gx[0][0] * src_gray.at<uchar>(x-1,y-1)) + (Gx[0][1] * src_gray.at<uchar>(x,y-1)) + (Gx[0][2] * src_gray.at<uchar>(x+1,y-1))+
-                    (Gx[1][0] * src_gray.at<uchar>(x-1,y)) + (Gx[1][1] * src_gray.at<uchar>(x,y)) + (Gx[1][2] * src_gray.at<uchar>(x+1,y))+
-                    (Gx[2][0] * src_gray.at<uchar>(x-1,y+1)) + (Gx[2][1] * src_gray.at<uchar>(x,y+1)) + (Gx[2][2] * src_gray.at<uchar>(x+1,y+1));
+                      (Gx[1][0] * src_gray.at<uchar>(x-1,y)) + (Gx[1][1] * src_gray.at<uchar>(x,y)) + (Gx[1][2] * src_gray.at<uchar>(x+1,y))+
+                      (Gx[2][0] * src_gray.at<uchar>(x-1,y+1)) + (Gx[2][1] * src_gray.at<uchar>(x,y+1)) + (Gx[2][2] * src_gray.at<uchar>(x+1,y+1));
             pixel_y = (Gy[0][0] * src_gray.at<uchar>(x-1,y-1)) + (Gy[0][1] * src_gray.at<uchar>(x,y-1)) + (Gy[0][2] * src_gray.at<uchar>(x+1,y-1))+
                       (Gy[1][0] * src_gray.at<uchar>(x-1,y)) + (Gy[1][1] * src_gray.at<uchar>(x,y)) + (Gy[1][2] * src_gray.at<uchar>(x+1,y))+
                       (Gy[2][0] * src_gray.at<uchar>(x-1,y+1)) + (Gy[2][1] * src_gray.at<uchar>(x,y+1)) + (Gy[2][2] * src_gray.at<uchar>(x+1,y+1));
@@ -205,15 +112,10 @@ void kip::sobelEdge(Mat src) {
     imwrite( "SobelEdge.pbm", dst);
     imshow("SobelEdge", dst);
 }
-void kip::edgeDetection(Mat src) {
+void EdgeDetection::process(Mat src) {
     //Edge Detection
-    float Kernel[3][3] = {
-            {1, 0, -1},
-            {0, 0, 0},
-            {-1, 0, 1}
-    };
     Mat src_gray;
-    cvtColor(src, src_gray, CV_BGR2GRAY );
+    cvtColor(src, src_gray, COLOR_BGR2GRAY );
     Mat dst = src_gray.clone();
     noBorderProcessing(src_gray, dst, Kernel);
     imwrite( "EdgeDetection.pbm", dst);
