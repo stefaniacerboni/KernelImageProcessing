@@ -14,14 +14,22 @@ int main() {
     img.Load(imageName);
     Gaussian_Blur gb;
     gb.process(img);
-    /*SobelEdge se;
+    SobelEdge se;
     se.process(img);
+
     Sharpen s;
     s.process(img);
-    EdgeDetection ed;
-    ed.process(img);
+    //EdgeDetection ed;
+    //ed.process(img);
     BoxBlur bb;
     bb.process(img);
+    Image * gray_image=img.ConvertRGB2BW(&img);
+    gray_image->Save("GrayImage.pgm");
+    gray_image->Show("GrayImage");
+
+    //Aggiungere campo nome nella classe Immagine
+
+    /*
     for (int i = 0; i < image.channels(); ++i) {
         kip::getChannelImage(image,i);
     }

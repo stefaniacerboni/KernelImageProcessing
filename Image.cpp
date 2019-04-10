@@ -29,6 +29,14 @@ array<Mat,3> Image::getBGRChannels() {
     split(pixels, bgr);
     return bgr;
 }
-void Image::Show(){
-    imshow("GaussianBlur", pixels);
+void Image::Show(String imName){
+    imshow(imName, pixels);
+}
+Image* Image::ConvertRGB2BW(Image *src){
+    Mat src_gray;
+    cvtColor(src->pixels, src_gray, COLOR_BGR2GRAY );
+    return new Image(src_gray);
+}
+void Image::setPixel(int i, int j, int value){
+    this->pixels.at<uchar>(i,j) = value;
 }

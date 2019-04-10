@@ -18,8 +18,16 @@ public:
 
     void Load(String path);
     void Save(String name);
-    void Show();
+    void Show(String imName);
+    Image * ConvertRGB2BW(Image * src);
+    Image(const Image& src){
+        this->pixels = src.pixels.clone();
+        this->width = src.width;
+        this->height = src.height;
+        this->channels = src.channels;
+    }
     uchar getPixel(int i, int j);
+    void setPixel(int i, int j, int value);
     array<Mat,3> getBGRChannels();
     explicit Image(array<Mat,3> ch){
         Mat dst;
