@@ -5,16 +5,21 @@
 #include <iostream>
 #include "Image.h"
 void Image::Load(String path) {
-    Mat temp = imread(path, IMREAD_COLOR );
+    try {
+        Mat temp = imread(path, IMREAD_COLOR);
 
-    if( temp.empty() )                      // Check for invalid input
-    {
-        cout <<  "Could not open or find the image" << std::endl ;
+        if (temp.empty())                      // Check for invalid input
+        {
+            throw invalid_argument("Wrong Path!");
+        }
+        pixels = imread( path, IMREAD_COLOR );
+        channels = pixels.channels();
+        width = pixels.cols;
+        height = pixels.rows;
     }
-    pixels = imread( path, IMREAD_COLOR );
-    channels = pixels.channels();
-    width = pixels.cols;
-    height = pixels.rows;
+    catch(invalid_argument const &ex) {
+        cerr << ex.what() << endl;
+    }
 }
 void Image::Save(String name) {
     imwrite(name, this->pixels);

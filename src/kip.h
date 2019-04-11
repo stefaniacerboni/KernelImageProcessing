@@ -15,7 +15,7 @@ using namespace std;
 
 class kip {
 public:
-    static void noBorderProcessing(Mat src, Mat dst, float Kernel[][3]);
+    static void noBorderProcessing(Mat src, Mat dst, float Kernel[]);
 
     //Kernel image processing:
     virtual void process(Image src) = 0;
@@ -26,10 +26,10 @@ class Gaussian_Blur : public kip{
 public:
     void process(Image src) override;
 private:
-    float Kernel[3][3] = {
-            {1/16.0, 2/16.0, 1/16.0},
-            {2/16.0, 4/16.0, 2/16.0},
-            {1/16.0, 2/16.0, 1/16.0}
+    float Kernel[9] = {
+            1/16.0, 2/16.0, 1/16.0,
+            2/16.0, 4/16.0, 2/16.0,
+            1/16.0, 2/16.0, 1/16.0
     };
 };
 
@@ -37,10 +37,10 @@ class BoxBlur : public kip{
 public:
     void process(Image src) override;
 private:
-    float Kernel[3][3] = {
-            {1/9.0, 1/9.0, 1/9.0},
-            {1/9.0, 1/9.0, 1/9.0},
-            {1/9.0, 1/9.0, 1/9.0}
+    float Kernel[9] = {
+            1/9.0, 1/9.0, 1/9.0,
+            1/9.0, 1/9.0, 1/9.0,
+            1/9.0, 1/9.0, 1/9.0
     };
 };
 
@@ -48,10 +48,10 @@ class Sharpen : public kip{
 public:
     void process(Image src) override;
 private:
-    float Kernel[3][3] = {
-            {0, -1, 0},
-            {-1, 5, -1},
-            {0, -1, 0}
+    float Kernel[9] = {
+            0, -1, 0,
+            -1, 5, -1,
+            0, -1, 0
     };
 };
 
@@ -74,10 +74,20 @@ class EdgeDetection: public kip{
 public:
     void process(Image src) override;
 private:
-    float Kernel[3][3] = {
-            {-1, -1, -1},
-            {-1, 8, -1},
-            {-1, -1, -1}
+    float Kernel[9] = {
+            -1, -1, -1,
+            -1, 8, -1,
+            -1, -1, -1
+    };
+};
+class Emboss : public kip{
+public:
+    void process(Image src) override;
+private:
+    float Kernel[9] = {
+            -2, -1, 0,
+            -1, 1, 1,
+            0, 1, 2
     };
 };
 #endif //PBM_KIP_H

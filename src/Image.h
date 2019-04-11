@@ -14,12 +14,14 @@ using namespace std;
 
 class Image {
 public:
-
-
     void Load(String path);
+
     void Save(String name);
+
     void Show(String imName);
+
     Image * ConvertRGB2BW(Image * src);
+
     Image(const Image& src){
         this->pixels = src.pixels.clone();
         this->width = src.width;
@@ -45,14 +47,8 @@ public:
         this->height = pixels.rows;
     }
     Image(){
-        this->width=0;
-        this->height=0;
         this->pixels= NULL;
-        this->channels=1;
     }
-private:
-    int width;
-public:
     int getWidth() const {
         return width;
     }
@@ -73,17 +69,18 @@ public:
         return channels;
     }
 
-    void setChannels(int channels) {
-        Image::channels = channels;
+    void setChannels(int ch) {
+        Image::channels = ch;
     }
     ~Image(){
         pixels.release();
     }
 
 private:
-    int height;
+    int width=0;
+    int height=0;
     Mat pixels;
-    int channels;
+    int channels=1;
 
 
 };

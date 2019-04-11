@@ -15,13 +15,14 @@ int main() {
     gb.process(img);
     SobelEdge se;
     se.process(img);
-
     Sharpen s;
     s.process(img);
     EdgeDetection ed;
     ed.process(img);
     BoxBlur bb;
     bb.process(img);
+    Emboss ess;
+    ess.process(img);
     Image * gray_image=img.ConvertRGB2BW(&img);
     gray_image->Save("GrayImage.pgm");
     gray_image->Show("GrayImage");
