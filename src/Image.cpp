@@ -40,3 +40,6 @@ Image* Image::ConvertRGB2BW(Image *src){
 void Image::setPixel(int i, int j, int value){
     this->pixels.at<uchar>(i,j) = value;
 }
+Mat Image::getPixels() {
+    return this->pixels;
+}

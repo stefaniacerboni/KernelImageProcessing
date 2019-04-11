@@ -101,3 +101,12 @@ void SobelEdge::process(Image src) {
     dst.Save("SobelEdge.pgm");
     dst.Show("SobelEdge");
 }
+
+void EdgeDetection::process(Image src) {
+    //Edge Detection
+    Image* src_gray = src.ConvertRGB2BW(&src);
+    Image dst = Image(*src_gray);
+    noBorderProcessing(src_gray->getPixels(), dst.getPixels(), Kernel);
+    dst.Save("EdgeDetection.pgm");
+    dst.Show("EdgeDetection");
+}

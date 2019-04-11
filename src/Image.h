@@ -29,6 +29,7 @@ public:
     uchar getPixel(int i, int j);
     void setPixel(int i, int j, int value);
     array<Mat,3> getBGRChannels();
+    Mat getPixels();
     explicit Image(array<Mat,3> ch){
         Mat dst;
         merge(ch, dst);
@@ -43,7 +44,12 @@ public:
         this->width = pixels.cols;
         this->height = pixels.rows;
     }
-    Image(){}
+    Image(){
+        this->width=0;
+        this->height=0;
+        this->pixels= NULL;
+        this->channels=1;
+    }
 private:
     int width;
 public:
@@ -69,6 +75,9 @@ public:
 
     void setChannels(int channels) {
         Image::channels = channels;
+    }
+    ~Image(){
+        pixels.release();
     }
 
 private:

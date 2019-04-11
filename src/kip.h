@@ -70,5 +70,14 @@ private:
             {1, 2, 1}
     };
 };
-
+class EdgeDetection: public kip{
+public:
+    void process(Image src) override;
+private:
+    float Kernel[3][3] = {
+            {-1, -1, -1},
+            {-1, 8, -1},
+            {-1, -1, -1}
+    };
+};
 #endif //PBM_KIP_H
