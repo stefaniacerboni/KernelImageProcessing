@@ -69,6 +69,7 @@ TEST(testImage, ControllaLetturaExc){
     catch(invalid_argument const &ex){
         EXPECT_EQ(ex.what(),std::string("Wrong Path!"));
     }
+    
 }
 int prova(int ac, char* av[])
 {
