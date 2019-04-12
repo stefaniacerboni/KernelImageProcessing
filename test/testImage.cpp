@@ -66,10 +66,10 @@ TEST(testImage, ControllaLetturaExc){
     try{
         img.Load("NotValidPath.pbm");
     }
-    catch(invalid_argument const &ex){
+    catch(Exception const &ex){
         EXPECT_EQ(ex.what(),std::string("Wrong Path!"));
     }
-    
+
 }
 int prova(int ac, char* av[])
 {

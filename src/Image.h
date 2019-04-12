@@ -14,11 +14,11 @@ using namespace std;
 
 class Image {
 public:
-    void Load(String path);
+    void Load(const String &path);
 
-    void Save(String name);
+    void Save(const String &name);
 
-    void Show(String imName);
+    void Show(const String &imName);
 
     Image * ConvertRGB2BW(Image * src);
 
