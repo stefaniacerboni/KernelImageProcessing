@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
+if (POLICY CMP0048)
+    cmake_policy(SET CMP0048 NEW)
+endif (POLICY CMP0048)
 project(PBM)
 add_executable(PBM main.cpp img.pbm logo.bmp marbles.pbm marbles1.pbm Vd-Orig.pbm src/kip.cpp src/Image.h src/Image.cpp src/kip.h)
 add_subdirectory(test)

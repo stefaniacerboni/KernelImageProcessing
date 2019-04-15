@@ -10,7 +10,7 @@
 using namespace std;
 using namespace cv;
 int main() {
-    string imageName( "/Users/giuliogambassi/Downloads/KernelImageProcessing-master/building.pgm" ); // by default
+    string imageName( "/Users/giuliogambassi/Downloads/KernelImageProcessing-master/Vd-orig.pbm" ); // by default
     cout<<"Loading image located at "<< imageName<<"..."<<endl;
     Image img;
     try {
@@ -31,6 +31,7 @@ int main() {
     EdgeDetection ed;
     BoxBlur bb;
     Emboss ess;
+    Image dst;
 
     while(cin.fail()||option<0||option>5){
         cout<<"Not valid, please retry"<<endl;
@@ -38,13 +39,14 @@ int main() {
     }
     switch(option) {
         case 0:
-            gb.process(img);
+            dst = gb.process(img);
             break;
         case 1:
-            se.process(img);
+            dst = se.process(img);
             break;
         case 2:
-            s.process(img);
+            dst = s.process(img);
+            dst.Save("Sharpen.ppm");
             break;
         case 3:
             ed.process(img);
@@ -59,6 +61,8 @@ int main() {
             exit(-2);
     }
     cout<<"Showing original image:"<<endl;
+    img.Show("Original Image");
+    dst.Show("Processed Image");
 
 
 
@@ -79,7 +83,7 @@ int main() {
 
     waitKey(0); // Wait for a keystroke in the window
     delete gray_image;*/
-    img.Show("Original Image");
+
     waitKey(0);
     return 0;
 

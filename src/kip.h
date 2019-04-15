@@ -15,16 +15,17 @@ using namespace std;
 
 class kip {
 public:
+    kip() = default;
     static void noBorderProcessing(Mat src, Mat dst, float Kernel[]);
 
     //Kernel image processing:
-    virtual void process(Image src) = 0;
+    virtual Image process(Image src) = 0;
     static void getChannelImage(Mat src, int channel);
 };
 
 class Gaussian_Blur : public kip{
 public:
-    void process(Image src) override;
+    Image process(Image src) override;
 private:
     float Kernel[9] = {
             1/16.0, 2/16.0, 1/16.0,
@@ -35,7 +36,7 @@ private:
 
 class BoxBlur : public kip{
 public:
-    void process(Image src) override;
+    Image process(Image src) override;
 private:
     float Kernel[9] = {
             1/9.0, 1/9.0, 1/9.0,
@@ -46,7 +47,7 @@ private:
 
 class Sharpen : public kip{
 public:
-    void process(Image src) override;
+    Image process(Image src) override;
 private:
     float Kernel[9] = {
             0, -1, 0,
@@ -57,7 +58,7 @@ private:
 
 class SobelEdge : public kip{
 public:
-    void process(Image src) override;
+    Image process(Image src) override;
 private:
     float Gx[3][3] = {
             {-1, 0, 1},
@@ -72,7 +73,7 @@ private:
 };
 class EdgeDetection: public kip{
 public:
-    void process(Image src) override;
+    Image process(Image src) override;
 private:
     float Kernel[9] = {
             -1, -1, -1,
@@ -82,7 +83,7 @@ private:
 };
 class Emboss : public kip{
 public:
-    void process(Image src) override;
+    Image process(Image src) override;
 private:
     float Kernel[9] = {
             -2, -1, 0,

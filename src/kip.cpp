@@ -8,14 +8,12 @@
 void kip::noBorderProcessing(Mat src, Mat dst, float Kernel[])
 {
     float sum;
-    int val=0;
     for(int i = 1; i < src.rows - 1; i++){
         for(int j = 1; j < src.cols - 1; j++){
             sum = 0.0;
             for(int k = -1; k <= 1;k++){
-                for(int l = -5; l <=1; l++){
-                    val = src.at<uchar>(i + k, j + l);
-                    sum += val * Kernel[(k+1)*3 + (l+1)];
+                for(int l = -1; l <=1; l++){
+                    sum += src.at<uchar>(i + k, j + l) * Kernel[(k+1)*3 + (l+1)];
                 }
             }
             //normalize the value between [0,255]
@@ -47,7 +45,7 @@ void kip::getChannelImage(Mat src, int channel) {
     }
 }
 
-void Gaussian_Blur::process(Image src) {
+Image Gaussian_Blur::process(Image src) {
     array<Mat,3> bgr;   //destination array
     bgr= src.getBGRChannels();
     array<Mat,3> dstbgr; //crea un'immagine di destinazione vuota
@@ -59,9 +57,10 @@ void Gaussian_Blur::process(Image src) {
     Image dst = Image(dstbgr);
     dst.Save("GaussianBlur.ppm");
     dst.Show("GaussianBlur");
+    return dst;
 }
 
-void BoxBlur::process(Image src){
+Image BoxBlur::process(Image src){
     array<Mat,3> bgr;   //destination array
     bgr= src.getBGRChannels();
     array<Mat,3> dstbgr; //crea un'immagine di destinazione vuota
@@ -72,8 +71,9 @@ void BoxBlur::process(Image src){
     Image dst = Image(dstbgr);
     dst.Save("BoxBlur.ppm");
     dst.Show("BoxBlur");
+    return dst;
 }
-void Sharpen::process(Image src){
+Image Sharpen::process(Image src){
     array<Mat,3> bgr;   //destination array
     bgr= src.getBGRChannels();
     array<Mat,3> dstbgr; //crea un'immagine di destinazione vuota
@@ -82,10 +82,11 @@ void Sharpen::process(Image src){
         noBorderProcessing(bgr[i],dstbgr[i],Kernel);
     }
     Image dst = Image(dstbgr);
-    dst.Save("Sharpen.ppm");
-    dst.Show("Sharpen");
+    //dst.Save("Sharpen.ppm");
+    //dst.Show("Sharpen");
+    return dst;
 }
-void SobelEdge::process(Image src) {
+Image SobelEdge::process(Image src) {
     float pixel_x;
     float pixel_y;
     float val;
@@ -94,7 +95,7 @@ void SobelEdge::process(Image src) {
     try {
         for (int x = 1; x < src_gray->getHeight() - 2; x++) {
             for (int y = 1; y < src_gray->getWidth() - 2; y++) {
-                pixel_x = (Gx[0][0] * src_gray->getPixel(x - 20, y - 1)) + (Gx[0][1] * src_gray->getPixel(x, y - 1)) +
+                pixel_x = (Gx[0][0] * src_gray->getPixel(x - 1, y - 1)) + (Gx[0][1] * src_gray->getPixel(x, y - 1)) +
                           (Gx[0][2] * src_gray->getPixel(x + 1, y - 1)) +
                           (Gx[1][0] * src_gray->getPixel(x - 1, y)) + (Gx[1][1] * src_gray->getPixel(x, y)) +
                           (Gx[1][2] * src_gray->getPixel(x + 1, y)) +
@@ -117,9 +118,10 @@ void SobelEdge::process(Image src) {
     dst.Save("SobelEdge.pgm");
     dst.Show("SobelEdge");
     delete src_gray;
+    return dst;
 }
 
-void EdgeDetection::process(Image src) {
+Image EdgeDetection::process(Image src) {
     //Edge Detection
     Image* src_gray = src.ConvertRGB2BW(&src);
     Image dst = Image(*src_gray);
@@ -127,9 +129,10 @@ void EdgeDetection::process(Image src) {
     dst.Save("EdgeDetection.pgm");
     dst.Show("EdgeDetection");
     delete src_gray;
+    return dst;
 }
 
-void Emboss::process(Image src){
+Image Emboss::process(Image src){
     //Edge Detection
     Image* src_gray = src.ConvertRGB2BW(&src);
     Image dst = Image(*src_gray);
@@ -137,4 +140,5 @@ void Emboss::process(Image src){
     dst.Save("Emboss.pgm");
     dst.Show("Emboss");
     delete src_gray;
+    return dst;
 }

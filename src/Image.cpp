@@ -14,7 +14,6 @@ void Image::Load(const String &path) {
     channels = pixels.channels();
     width = pixels.cols;
     height = pixels.rows;
-    //cerr << ex.what() << endl;
 }
 void Image::Save(const String &name) {
     imwrite(name, this->pixels);
@@ -25,8 +24,6 @@ uchar Image::getPixel(int i, int j){
     else
         return pixels.at<uchar>(i,j);
 }
-
-
 array<Mat,3> Image::getBGRChannels() {
     array<Mat,3> bgr;
     split(pixels, bgr);

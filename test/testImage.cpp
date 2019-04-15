@@ -11,68 +11,35 @@ using testing::Eq;
 class testImage : public testing::Test{
 public:
 
-    Image a;
+    Image * img;
 
         testImage(){
-            a;
+            img = new Image();
         }
-        ~testImage() {
+        virtual ~testImage() {
+            delete img;
         }
 };
 
-TEST(testImage, TestCostruttoreBase){
-    Image a;
-    ASSERT_EQ(a.getWidth(), 0);
+TEST_F(testImage, TestCostruttoreBase){
+    ASSERT_EQ(img->getWidth(), 0);
 }
 
-TEST(testImage, ControllaValiditàConvoluzione){
-    int r=3;
-    int c=4;
-    vector< uchar> Vf{197,15,32,208,173,72,191,243,200,79,103,222};
-
-    //insert value
-    //create Mat
-    Mat M=Mat(r,c,CV_32FC1);
-    //copy vector to mat
-    for (int k = 0; k < r; k++) {
-        for (int i = 0; i < c; i++) {
-            M.at<uchar>(k,i)= Vf[(c*k)+i];
-        }
-    }
-    //print Mat
-    float Kernel[9] = {
-            0, -1, 0,
-            -1, 5, -1,
-            0, -1, 0
-    };
-    int val;
-    Mat dst = M.clone();
-    vector<uchar> calc{197,15,32,208,173,0,255,243,200,79,103,222};
-    bool noteq = false;
-    kip::noBorderProcessing(M, dst, Kernel);
-    for (int j = 0; j < r; ++j) {
-        for (int i = 0; i < c; ++i) {
-            val = dst.at<uchar>(j,i);
-            if(dst.at<uchar>(j,i)!=calc[(c*j)+i])
-                noteq=true;
-        }
-    }
-    ASSERT_EQ(noteq,false);
-    M.release();
-    dst.release();
-}
-TEST(testImage, ControllaLetturaExc){
-    Image img;
+TEST_F(testImage, ControllaLetturaExc){
     try{
-        img.Load("NotValidPath.pbm");
+        img->Load("NotValidPath.pbm");
     }
-    catch(Exception const &ex){
-        EXPECT_EQ(ex.what(),std::string("Wrong Path!"));
+    catch(invalid_argument const &ex){
+        cerr<<ex.what()<<endl;
+        EXPECT_EQ(ex.what(),std::string("Couldn't find any image, please check the path"));
     }
 
 }
-int prova(int ac, char* av[])
-{
-    testing::InitGoogleTest(&ac, av);
-    return RUN_ALL_TESTS();
+TEST_F(testImage, ControllaGetPixel){
+    try{
+        img->getPixel(-2,-2);
+    }
+    catch(out_of_range const &ex){
+        EXPECT_EQ(ex.what(),std::string("Index i=-2, j=-2 out of bound"));
+    }
 }

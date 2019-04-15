@@ -7,7 +7,7 @@ if( OpenCV_FOUND )
 endif( OpenCV_FOUND )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-add_executable(runUnitTests testImage.cpp prova.cpp ../src/kip.h ../src/kip.cpp ../src/Image.cpp ../src/Image.h)
+add_executable(runUnitTests testImage.cpp ../src/kip.h ../src/kip.cpp ../src/Image.cpp ../src/Image.h testKIP.cpp)
 #Link with GoogleTest
 target_link_libraries(runUnitTests gtest gtest_main)
 target_link_libraries(runUnitTests ${log-lib} ${OpenCV_LIBS} )
