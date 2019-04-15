@@ -55,22 +55,18 @@ Image Gaussian_Blur::process(Image src) {
         noBorderProcessing(bgr[i],dstbgr[i],Kernel);
     }
     Image dst = Image(dstbgr);
-    dst.Save("GaussianBlur.ppm");
-    dst.Show("GaussianBlur");
     return dst;
 }
 
 Image BoxBlur::process(Image src){
-    array<Mat,3> bgr;   //destination array
+    array<Mat,3> bgr;
     bgr= src.getBGRChannels();
     array<Mat,3> dstbgr; //crea un'immagine di destinazione vuota
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < src.getChannels(); ++i) {
         dstbgr[i] = Mat::zeros(Size(src.getWidth(), src.getHeight()), CV_8UC1);
         noBorderProcessing(bgr[i],dstbgr[i],Kernel);
     }
     Image dst = Image(dstbgr);
-    dst.Save("BoxBlur.ppm");
-    dst.Show("BoxBlur");
     return dst;
 }
 Image Sharpen::process(Image src){
@@ -82,15 +78,15 @@ Image Sharpen::process(Image src){
         noBorderProcessing(bgr[i],dstbgr[i],Kernel);
     }
     Image dst = Image(dstbgr);
-    //dst.Save("Sharpen.ppm");
-    //dst.Show("Sharpen");
     return dst;
 }
 Image SobelEdge::process(Image src) {
     float pixel_x;
     float pixel_y;
     float val;
-    Image* src_gray = src.ConvertRGB2BW(&src);
+    Image* src_gray = new Image(src);
+    if(src.getChannels()>1)
+        src_gray = src.ConvertRGB2BW(&src);
     Image dst = Image(*src_gray);
     try {
         for (int x = 1; x < src_gray->getHeight() - 2; x++) {
@@ -115,30 +111,30 @@ Image SobelEdge::process(Image src) {
         cerr<<ex.what()<<endl;
         cout<<"Something's wrong with the indexes, please check"<<endl;
     }
-    dst.Save("SobelEdge.pgm");
-    dst.Show("SobelEdge");
     delete src_gray;
     return dst;
 }
 
 Image EdgeDetection::process(Image src) {
-    //Edge Detection
-    Image* src_gray = src.ConvertRGB2BW(&src);
+    Image* src_gray;
+    if(src.getChannels()>1)
+        src_gray = src.ConvertRGB2BW(&src);
+    else
+        *src_gray = Image(src);
     Image dst = Image(*src_gray);
     noBorderProcessing(src_gray->getPixels(), dst.getPixels(), Kernel);
-    dst.Save("EdgeDetection.pgm");
-    dst.Show("EdgeDetection");
     delete src_gray;
     return dst;
 }
 
 Image Emboss::process(Image src){
-    //Edge Detection
-    Image* src_gray = src.ConvertRGB2BW(&src);
+    Image* src_gray;
+    if(src.getChannels()>1)
+        src_gray = src.ConvertRGB2BW(&src);
+    else
+        *src_gray = Image(src);
     Image dst = Image(*src_gray);
     noBorderProcessing(src_gray->getPixels(), dst.getPixels(), Kernel);
-    dst.Save("Emboss.pgm");
-    dst.Show("Emboss");
     delete src_gray;
     return dst;
 }

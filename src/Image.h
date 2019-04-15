@@ -34,7 +34,13 @@ public:
     Mat getPixels();
     explicit Image(array<Mat,3> ch){
         Mat dst;
-        merge(ch, dst);
+        int val;
+        if(channels>1)
+            merge(ch, dst);
+        else {
+            dst = ch[0];
+            val = dst.at<uchar>(0,0);
+        }
         this->pixels = dst.clone();
         this->channels = pixels.channels();
         this->width = pixels.cols;

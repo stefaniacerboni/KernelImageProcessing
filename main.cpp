@@ -10,7 +10,7 @@
 using namespace std;
 using namespace cv;
 int main() {
-    string imageName( "/Users/giuliogambassi/Downloads/KernelImageProcessing-master/Vd-orig.pbm" ); // by default
+    string imageName( "/Users/giuliogambassi/Downloads/KernelImageProcessing-master/marbles1.pbm" ); // by default
     cout<<"Loading image located at "<< imageName<<"..."<<endl;
     Image img;
     try {
@@ -40,22 +40,39 @@ int main() {
     switch(option) {
         case 0:
             dst = gb.process(img);
+            if(dst.getChannels()>1)
+                dst.Save("GaussianBlur.ppm");
+            else
+                dst.Save("GaussianBlur.pgm");
             break;
         case 1:
             dst = se.process(img);
+            dst.Save("SobelEdge.pgm");
             break;
         case 2:
             dst = s.process(img);
-            dst.Save("Sharpen.ppm");
+            if(dst.getChannels()>1)
+                dst.Save("Sharpen.ppm");
+            else
+                dst.Save("Sharpen.pgm");
             break;
         case 3:
-            ed.process(img);
+            dst = ed.process(img);
+            dst.Save("EdgeDetection.pgm");
             break;
         case 4:
-            bb.process(img);
+            dst = bb.process(img);
+            if(dst.getChannels()>1)
+                dst.Save("BoxBlur.ppm");
+            else
+                dst.Save("BoxBlur.pgm");
             break;
         case 5:
-            ess.process(img);
+            dst = ess.process(img);
+            if(dst.getChannels()>1)
+                dst.Save("Emboss.ppm");
+            else
+                dst.Save("Emboss.pgm");
             break;
         default:
             exit(-2);

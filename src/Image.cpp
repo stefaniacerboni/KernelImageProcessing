@@ -25,8 +25,15 @@ uchar Image::getPixel(int i, int j){
         return pixels.at<uchar>(i,j);
 }
 array<Mat,3> Image::getBGRChannels() {
-    array<Mat,3> bgr;
-    split(pixels, bgr);
+    array<Mat, 3> bgr;
+    if(channels>1) {
+        split(pixels, bgr);
+    }
+    else{
+        bgr[0] = pixels;
+        bgr[1]=Mat::zeros(Size(width, height), CV_8UC1);
+        bgr[2]=Mat::zeros(Size(width, height), CV_8UC1);
+    }
     return bgr;
 }
 void Image::Show(const String &imName){
